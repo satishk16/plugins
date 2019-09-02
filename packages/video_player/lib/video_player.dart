@@ -151,6 +151,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
   VideoPlayerController.asset(this.dataSource, {this.package})
       : dataSourceType = DataSourceType.asset,
         formatHint = null,
+        headers = null,
         super(VideoPlayerValue(duration: null));
 
   /// Constructs a [VideoPlayerController] playing a video from obtained from
@@ -160,10 +161,12 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
   /// null.
   /// **Android only**: The [formatHint] option allows the caller to override
   /// the video format detection code.
-  VideoPlayerController.network(this.dataSource, {this.formatHint})
+  VideoPlayerController.network(this.dataSource, this.headers, {this.formatHint})
       : dataSourceType = DataSourceType.network,
         package = null,
         super(VideoPlayerValue(duration: null));
+
+  
 
   /// Constructs a [VideoPlayerController] playing a video from a file.
   ///
@@ -174,6 +177,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
         dataSourceType = DataSourceType.file,
         package = null,
         formatHint = null,
+        headers = null,
         super(VideoPlayerValue(duration: null));
 
   int _textureId;
@@ -185,6 +189,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
   final DataSourceType dataSourceType;
 
   final String package;
+  final dynamic headers;
   Timer _timer;
   bool _isDisposed = false;
   Completer<void> _creatingCompleter;
@@ -207,7 +212,8 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
         };
         break;
       case DataSourceType.network:
-        dataSourceDescription = <String, dynamic>{'uri': dataSource};
+        dataSourceDescription = <String, dynamic>{'uri': dataSource,
+          'headers' : headers};
         break;
       case DataSourceType.file:
         dataSourceDescription = <String, dynamic>{
